@@ -1,0 +1,30 @@
+{
+  "name": "tech-sprint",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start-dev": "nodemon ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JSA04/tech-sprint.git"
+  },
+  "author": "Davi Piassi, Juan Araujo, Kauã Santos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JSA04/tech-sprint/issues"
+  },
+  "homepage": "https://github.com/JSA04/tech-sprint#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "dotnet": "^1.1.4",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.3",
+    "mysql2": "^3.15.2",
+    "nodemon": "^3.1.10",
+    "pg": "^8.16.3",
+    "sequelize": "^6.37.7"
+  }
+}
