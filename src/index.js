@@ -7,6 +7,11 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 // EXPRESS SETUP
 const conn = require('./db/conn');
+const Category = require('./models/Category');
+const Vote = require('./models/Vote');
+const Idea = require('./models/Idea');
+const User = require('./models/User');
+
 const app = express();
 
 const PORT = process.env.PORT || 3000;
