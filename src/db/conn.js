@@ -12,9 +12,9 @@ const sequelize = new Sequelize(DB_SEQUELIZE_TABLE, DB_USER, DB_PASSWORD, {
 
 try {
   sequelize.authenticate();
-  console.log('🔌 Conexão com o PostgreSQL estabelecida com sucesso!');
+  console.log('Connected to the database!');
 } catch (error) {
-  console.error('❌ Não foi possível conectar ao banco de dados:', error);
+  console.error('Not possible to connect to database:', error);
 }
 
 module.exports = sequelize;
