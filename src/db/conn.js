@@ -10,6 +10,8 @@ const sequelize = new Sequelize(DB_SEQUELIZE_DATABASE, DB_USER, DB_PASSWORD, {
   host: DB_HOST,
   port: DB_PORT,
   dialect: 'mysql',
+  timezone: '-03:00', 
+  logging: process.env.DB_LOGGING === 'true' ? console.log : false,
   dialectOptions: {
     ssl: { require: true, rejectUnauthorized: false }
   }
