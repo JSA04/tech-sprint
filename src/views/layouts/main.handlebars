@@ -3,15 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <title>Ideias</title>
-  <link rel="stylesheet" href="/css/styles.css"> </head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="/css/styles.css"> 
+  <script src="/js/flashMessage.js" defer></script>
+</head>
 <body>
   <header>
     <h1>Ideias</h1>
     <nav>
+      {{#if user}}
+        <form action="/users/logout" method="POST">
+          <input type="hidden" name="_csrf" value="{{csrfToken}}">
+          <button type="submit" class="logout-btn">Sair</button>
+        </form>
+      {{else}}
+        <a href="/users/login">Entrar</a>
+        <a href="/users/signup">Cadastrar</a>
+      {{/if}}
     </nav>
   </header>
   <hr>
   <main>
+    {{> messages}}
     {{{ body }}}
   </main>
 </body>
