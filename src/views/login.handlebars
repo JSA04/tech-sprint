@@ -1,0 +1,22 @@
+<div class="container center">
+    <form action="/users/login" method="post" class="form">
+        <h3>Login</h3>
+
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+
+        <div class="field">
+            <label for="email">E-mail</label>
+            <input type="email" name="email">
+        </div>
+
+        <div class="field">
+            <label for="password">Senha</label>
+            <input type="password" name="password">
+        </div>
+
+        <div class="actions">
+            <span>Não tem uma conta? <a href="/users/signup">Criar</a></span>
+            <button type="submit">Entrar</button>
+        </div>
+    </form>
+</div>
