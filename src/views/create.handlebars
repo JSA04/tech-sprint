@@ -1,0 +1,32 @@
+<h2>Nova Ideia</h2>
+
+{{#if error}}
+  <div class="alert alert-danger">{{error}}</div>
+{{/if}}
+
+<form action="/ideas" method="POST">
+  <div class="form-group">
+    <label for="title">Título:</label>
+    <input type="text" class="form-control" id="title" name="title" value="{{data.title}}" required minlength="3" maxlength="100">
+  </div>
+
+  <div class="form-group">
+    <label for="description">Descrição:</label>
+    <textarea class="form-control" id="description" name="description" rows="4" required>{{data.description}}</textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="categoryId">Categoria:</label>
+    <select class="form-control" id="categoryId" name="categoryId" required>
+      <option value="">Selecione uma categoria</option>
+      {{#each categories}}
+        <option value="{{this.id}}" {{#if (eq ../data.categoryId this.id)}}selected{{/if}}>
+          {{this.name}}
+        </option>
+      {{/each}}
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Criar Ideia</button>
+  <a href="/ideas" class="btn btn-secondary">Cancelar</a>
+</form>

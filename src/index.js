@@ -1,6 +1,8 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 const path = require('path');
+const Idea = require('./models/Idea');
+const ideasRoutes = require('./routes/ideasRoutes');
 
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
@@ -29,6 +31,10 @@ app.use(express.json());
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.use(express.static('public'));
+
+// Uso das rotas
+app.use('/ideas', ideasRoutes);
+app.get('/', (req, res) => res.redirect('/ideas'));
 
 
 // DATABASE CONNECTION AND SERVER START

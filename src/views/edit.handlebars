@@ -1,0 +1,42 @@
+<h2>Editar Ideia</h2>
+
+{{#if error}}
+  <div class="alert alert-danger">{{error}}</div>
+{{/if}}
+
+<form action="/ideas/{{idea.id}}?_method=PUT" method="POST">
+  <div class="form-group">
+    <label for="title">Título:</label>
+    <input type="text" class="form-control" id="title" name="title" value="{{idea.title}}" required minlength="3" maxlength="100">
+  </div>
+
+  <div class="form-group">
+    <label for="description">Descrição:</label>
+    <textarea class="form-control" id="description" name="description" rows="4" required>{{idea.description}}</textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="categoryId">Categoria:</label>
+    <select class="form-control" id="categoryId" name="categoryId" required>
+      <option value="">Selecione uma categoria</option>
+      {{#each categories}}
+        <option value="{{this.id}}" {{#if (eq ../idea.categoryId this.id)}}selected{{/if}}>
+          {{this.name}}
+        </option>
+      {{/each}}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="status">Status:</label>
+    <select class="form-control" id="status" name="status" required>
+      <option value="Em Análise" {{#if (eq idea.status 'Em Análise')}}selected{{/if}}>Em Análise</option>
+      <option value="Aprovada" {{#if (eq idea.status 'Aprovada')}}selected{{/if}}>Aprovada</option>
+      <option value="Implementada" {{#if (eq idea.status 'Implementada')}}selected{{/if}}>Implementada</option>
+      <option value="Recusada" {{#if (eq idea.status 'Recusada')}}selected{{/if}}>Recusada</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+  <a href="/ideas" class="btn btn-secondary">Cancelar</a>
+</form>
