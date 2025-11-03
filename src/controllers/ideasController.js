@@ -1,24 +1,15 @@
-const Idea = require("../models/Idea");
-const Category = require("../models/Category");
+const ideaService = require("../services/IdeaService");
 
 module.exports = {
   async findAllIdeas(req, res) {
     try {
-      const ideas = await Idea.findAll({
-        include: [
-          {
-            model: Category,
-            as: "category",
-          },
-        ],
-        order: [["createdAt", "DESC"]],
-      });
+      const ideas = await ideaService.findAll();
       res.render("all", { ideas });
     } catch (error) {
       console.error(error);
       res.status(500).render("all", {
         ideas: [],
-        error: "Erro ao carregar ideias",
+        error: error.message,
       });
     }
   },
@@ -26,58 +17,39 @@ module.exports = {
   async findIdeaById(req, res) {
     const { id } = req.params;
     try {
-      const idea = await Idea.findOne({
-        where: { id },
-        include: [
-          {
-            model: Category,
-            as: "category",
-          },
-        ],
-      });
-
-      if (!idea) {
-        return res.status(404).json({ error: "Ideia não encontrada" });
-      }
-
+      const idea = await ideaService.findById(id);
       res.render("idea", { idea });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Erro ao buscar ideia" });
+      res
+        .status(error.message.includes("não encontrada") ? 404 : 500)
+        .json({ error: error.message });
     }
   },
 
   async createIdeaForm(req, res) {
     try {
-      const categories = await Category.findAll();
+      const categories = await ideaService.getAllCategories();
       res.render("create", { categories });
     } catch (error) {
       console.error(error);
       res.status(500).render("create", {
         categories: [],
-        error: "Erro ao carregar categorias",
+        error: error.message,
       });
     }
   },
 
   async saveNewIdea(req, res) {
-    const { title, description, categoryId } = req.body;
-
     try {
-      await Idea.create({
-        title,
-        description,
-        categoryId,
-        status: "Em Análise",
-      });
-
+      await ideaService.create(req.body);
       res.redirect("/ideas");
     } catch (error) {
       console.error(error);
-      const categories = await Category.findAll();
+      const categories = await ideaService.getAllCategories();
       res.render("create", {
         categories,
-        error: "Erro ao criar ideia",
+        error: error.message,
         data: req.body,
       });
     }
@@ -86,13 +58,8 @@ module.exports = {
   async editIdeaForm(req, res) {
     const { id } = req.params;
     try {
-      const idea = await Idea.findByPk(id);
-      const categories = await Category.findAll();
-
-      if (!idea) {
-        return res.status(404).redirect("/ideas");
-      }
-
+      const idea = await ideaService.findById(id);
+      const categories = await ideaService.getAllCategories();
       res.render("edit", { idea, categories });
     } catch (error) {
       console.error(error);
@@ -102,47 +69,26 @@ module.exports = {
 
   async updateIdea(req, res) {
     const { id } = req.params;
-    const { title, description, categoryId, status } = req.body;
-
     try {
-      const idea = await Idea.findByPk(id);
-
-      if (!idea) {
-        return res.status(404).json({ error: "Ideia não encontrada" });
-      }
-
-      await idea.update({
-        title,
-        description,
-        categoryId,
-        status,
-      });
-
+      await ideaService.update(id, req.body);
       res.redirect("/ideas");
     } catch (error) {
       console.error(error);
       res.status(500).render("edit", {
         idea: req.body,
-        error: "Erro ao atualizar ideia",
+        error: error.message,
       });
     }
   },
 
   async deleteIdea(req, res) {
     const { id } = req.params;
-
     try {
-      const idea = await Idea.findByPk(id);
-
-      if (!idea) {
-        return res.status(404).json({ error: "Ideia não encontrada" });
-      }
-
-      await idea.destroy();
+      await ideaService.delete(id);
       res.redirect("/ideas");
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Erro ao deletar ideia" });
+      res.status(500).json({ error: error.message });
     }
   },
 };

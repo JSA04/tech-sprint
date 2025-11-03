@@ -38,13 +38,11 @@ const Idea = db.define(
   }
 );
 
-// Relacionamento com Category
 Idea.belongsTo(Category, {
   foreignKey: "category_id",
   as: "category",
 });
 
-// Relacionamento com User
 const User = require("./User");
 Idea.belongsTo(User, {
   foreignKey: "created_by",
