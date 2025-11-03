@@ -38,6 +38,8 @@ header nav a, header nav .logout-btn {
   text-decoration: none;
   font-weight: 600;
   color: var(--blue);
+  background-color: transparent;
+  font-size: 1em;
 }
 header nav a:hover {
   border: none;
