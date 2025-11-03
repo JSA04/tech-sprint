@@ -82,8 +82,12 @@ class IdeaService {
 
   async getAllCategories() {
     try {
-      return await Category.findAll();
+      console.log("Buscando categorias..."); // Log para debug
+      const categories = await Category.findAll();
+      console.log("Categorias encontradas:", categories); // Log para debug
+      return categories;
     } catch (error) {
+      console.error("Erro detalhado:", error); // Log para debug
       throw new Error("Erro ao buscar categorias: " + error.message);
     }
   }

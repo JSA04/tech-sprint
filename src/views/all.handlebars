@@ -4,11 +4,10 @@
   <div class="alert alert-danger">{{error}}</div>
 {{/if}}
 
-<div class="actions">
-  <a href="/ideas/new" class="btn btn-primary">Nova Ideia</a>
-</div>
-
 {{#if ideas.length}}
+  <div class="actions">
+    <a href="/ideas/new" class="btn btn-primary">Nova Ideia</a>
+  </div>
   <div class="ideas-grid">
     {{#each ideas}}
       <div class="idea-card status-{{this.status}}">

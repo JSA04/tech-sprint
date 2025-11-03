@@ -39,7 +39,7 @@ const Idea = db.define(
 );
 
 Idea.belongsTo(Category, {
-  foreignKey: "category_id",
+  foreignKey: "categoryId",
   as: "category",
 });
 

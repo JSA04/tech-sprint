@@ -30,9 +30,10 @@ module.exports = {
   async createIdeaForm(req, res) {
     try {
       const categories = await ideaService.getAllCategories();
+      console.log("Categorias encontradas:", categories);
       res.render("create", { categories });
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao buscar categorias:", error);
       res.status(500).render("create", {
         categories: [],
         error: error.message,
