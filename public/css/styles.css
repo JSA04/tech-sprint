@@ -1,16 +1,171 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+:root {
+  --primary-color: #ff6b00;
+  --primary-dark: #cc5500;
+  --primary-light: #ff8533;
+  --accent-color: #ff9f40;
+  --background-color: #fff9f5;
+  --card-background: #ffffff;
+  --text-color: #333333;
+  --text-light: #666666;
+}
+
 /* Estilos gerais */
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   margin: 0;
-  padding: 20px;
-  background-color: #f5f5f5;
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.navbar {
+  background-color: var(--primary-color) !important;
+}
+
+.navbar-dark .navbar-brand,
+.navbar-dark .nav-link {
+  color: white !important;
+}
+
+.navbar-dark .nav-link:hover {
+  color: var(--background-color) !important;
 }
 
 h1,
 h2,
 h3 {
-  color: #333;
+  color: var(--primary-dark);
 }
 
 /* Grid de ideias */
@@ -22,81 +177,114 @@ h3 {
 }
 
 .idea-card {
-  background: white;
-  border-radius: 8px;
+  background: var(--card-background);
+  border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  box-shadow: 0 4px 6px rgba(255, 107, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 107, 0, 0.1);
 }
 
 .idea-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(255, 107, 0, 0.2);
 }
 
 /* Status badges */
 .status-badge {
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px 12px;
+  border-radius: 15px;
   font-size: 0.85em;
   font-weight: bold;
+  display: inline-block;
 }
 
 .status-badge.Em.Análise {
-  background-color: #ffd700;
-  color: #000;
+  background-color: var(--accent-color);
+  color: white;
 }
 
 .status-badge.Aprovada {
-  background-color: #90ee90;
-  color: #006400;
-}
-
-.status-badge.Implementada {
   background-color: #4caf50;
   color: white;
 }
 
+.status-badge.Implementada {
+  background-color: #2e7d32;
+  color: white;
+}
+
 .status-badge.Recusada {
-  background-color: #ff6b6b;
+  background-color: #dc3545;
   color: white;
 }
 
 /* Formulários */
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-control {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
   box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
 }
 
 /* Botões */
 .btn {
   display: inline-block;
-  padding: 8px 16px;
-  border-radius: 4px;
+  padding: 8px 20px;
+  border-radius: 25px;
   text-decoration: none;
   cursor: pointer;
   border: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: white;
 }
 
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
 .btn-secondary {
-  background-color: #6c757d;
+  background-color: var(--text-light);
   color: white;
 }
 
 .btn-danger {
   background-color: #dc3545;
   color: white;
+}
+
+.btn-outline-primary {
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  background-color: transparent;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.875rem;
 }
 
 /* Estado vazio */
@@ -126,4 +314,234 @@ h3 {
   .ideas-grid {
     grid-template-columns: 1fr;
   }
+}
+:root {
+  --black: #181818;
+  --white: #fafbfc;
+  --yellow: #e1a115;
+  --orange: #ae7407;
+  --blue: #011a4b;
+  --light-blue: #115dbb;
+  --success: #11e06e;
+  --error: #e84d3c;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  font-family: "Inter", sans-serif;
+  color: var(--black);
+}
+
+header nav a,
+header nav .logout-btn {
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--blue);
+  background-color: transparent;
+  font-size: 1em;
+}
+header nav a:hover {
+  border: none;
+}
+main {
+  padding: 3rem 2rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--blue);
+}
+
+.container.center {
+  width: 40%;
+  height: 100%;
+  margin: auto;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.field {
+  display: block; /* evita regras antigas de header com flex */
+  width: 100%;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.field label {
+  font-size: 0.75em;
+}
+.field input {
+  height: 40px;
+  padding-left: 0.75rem;
+}
+a {
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--light-blue);
+  transition: 1s;
+}
+a:hover {
+  border-bottom: var(--light-blue) 1px solid;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background-color: var(--blue);
+  border: none;
+  border-radius: 4px;
+  color: var(--white);
+  cursor: pointer;
+}
+button:hover {
+  background-color: #022875;
+  transition: 0.5s;
+}
+.app-header .header-actions form {
+  margin: 0;
+}
+.app-header .header-actions .btn,
+.app-header .nav-links .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.flash-message {
+  position: absolute;
+  top: 12vh;
+  right: 1rem;
+  padding: 1rem 2.5rem 1rem 1rem;
+  border-radius: 4px;
+  font-size: 1em;
+  width: 90%;
+  max-width: 500px;
+  color: var(--white);
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: slideDown 0.3s ease forwards;
+  transition: opacity 0.4s ease;
+}
+
+/* ===== Header refreshed styles ===== */
+.app-header {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--yellow);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.app-header .header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 64px;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* esquerda | centro | direita */
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.app-header .brand {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--blue);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-header .nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.app-header .nav-link {
+  color: var(--blue);
+  font-weight: 600;
+  text-decoration: none;
+}
+.app-header .nav-link:hover {
+  border-bottom: 2px solid var(--blue);
+}
+
+.app-header .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-header .user-pill {
+  background: rgba(1, 26, 75, 0.08);
+  color: var(--blue);
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .app-header .nav-links {
+    display: none; /* simplifica em telas pequenas */
+  }
+  .app-header .header-inner {
+    padding: 0 1rem;
+  }
+}
+
+.flash-message.success {
+  background-color: var(--success);
+}
+.flash-message.error {
+  background-color: var(--error);
+}
+
+.flash-message .close-btn {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.25rem;
+  border: none;
+  background: transparent;
+  color: var(--white);
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.flash-message .close-btn:hover {
+  transform: scale(1.2);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-out {
+  opacity: 0 !important;
+  transform: translateY(-10px);
 }
