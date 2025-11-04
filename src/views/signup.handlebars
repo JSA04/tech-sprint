@@ -1,27 +1,49 @@
-<div class="container center">
-    <form action="/users" method="post" class="form">
-        <h3>Registre-se</h3>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-6 col-lg-5">
+      <form action="/users" method="post" class="card p-4 shadow-sm">
+        <h3 class="mb-3">Registre-se</h3>
 
-        <input type="hidden" name="_csrf" value="{{csrfToken}}">
-        
-        <div class="field">
-            <label for="name">Nome</label>
-            <input name="name">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+
+        <div class="mb-3">
+          <label for="name" class="form-label">Nome</label>
+          <input
+            class="form-control"
+            name="name"
+            placeholder="Seu nome"
+            required
+          />
         </div>
 
-        <div class="field">
-            <label for="email">E-mail</label>
-            <input type="email" name="email">
+        <div class="mb-3">
+          <label for="email" class="form-label">E-mail</label>
+          <input
+            class="form-control"
+            type="email"
+            name="email"
+            placeholder="seuemail@exemplo.com"
+            required
+          />
         </div>
 
-        <div class="field">
-            <label for="password">Senha</label>
-            <input type="password" name="password">
+        <div class="mb-3">
+          <label for="password" class="form-label">Senha</label>
+          <input
+            class="form-control"
+            type="password"
+            name="password"
+            placeholder="••••••••"
+            minlength="6"
+            required
+          />
         </div>
 
-        <div class="actions">
-            <span>Já tem uma conta? <a href="/users/login">Entrar</a></span>
-            <button type="submit">Criar conta</button>
+        <div class="d-flex justify-content-between align-items-center">
+          <span>Já tem uma conta? <a href="/users/login">Entrar</a></span>
+          <button type="submit" class="btn btn-primary">Criar conta</button>
         </div>
-    </form>
+      </form>
+    </div>
+  </div>
 </div>

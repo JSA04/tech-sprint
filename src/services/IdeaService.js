@@ -1,5 +1,6 @@
 const Idea = require("../models/Idea");
 const Category = require("../models/Category");
+const User = require("../models/User");
 
 class IdeaService {
   async findAll() {
@@ -9,6 +10,11 @@ class IdeaService {
           {
             model: Category,
             as: "category",
+          },
+          {
+            model: User,
+            as: "creator",
+            attributes: ["id", "name"],
           },
         ],
         order: [["createdAt", "DESC"]],
@@ -27,6 +33,11 @@ class IdeaService {
             model: Category,
             as: "category",
           },
+          {
+            model: User,
+            as: "creator",
+            attributes: ["id", "name"],
+          },
         ],
       });
 
@@ -40,13 +51,13 @@ class IdeaService {
     }
   }
 
-  async create(ideaData) {
+  async create(ideaData, userId) {
     try {
       return await Idea.create({
         title: ideaData.title,
         description: ideaData.description,
         categoryId: ideaData.categoryId,
-        status: "Em Análise",
+        created_by: userId,
       });
     } catch (error) {
       throw new Error("Erro ao criar ideia: " + error.message);
@@ -61,7 +72,6 @@ class IdeaService {
         title: ideaData.title,
         description: ideaData.description,
         categoryId: ideaData.categoryId,
-        status: ideaData.status,
       });
 
       return idea;
@@ -82,12 +92,24 @@ class IdeaService {
 
   async getAllCategories() {
     try {
-      console.log("Buscando categorias..."); // Log para debug
-      const categories = await Category.findAll();
-      console.log("Categorias encontradas:", categories); // Log para debug
+      const categories = await Category.findAll({
+        attributes: ["id", "name"],
+        raw: true,
+      });
+
+      if (!categories || categories.length === 0) {
+        for (const category of defaultCategories) {
+          await Category.create(category);
+        }
+
+        return await Category.findAll({
+          attributes: ["id", "name"],
+          raw: true,
+        });
+      }
+
       return categories;
     } catch (error) {
-      console.error("Erro detalhado:", error); // Log para debug
       throw new Error("Erro ao buscar categorias: " + error.message);
     }
   }

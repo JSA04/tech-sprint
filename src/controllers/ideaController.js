@@ -18,7 +18,7 @@ module.exports = {
     const { id } = req.params;
     try {
       const idea = await ideaService.findById(id);
-      res.render("idea", { idea });
+      res.render("all", { ideas: [idea] });
     } catch (error) {
       console.error(error);
       res
@@ -30,7 +30,6 @@ module.exports = {
   async createIdeaForm(req, res) {
     try {
       const categories = await ideaService.getAllCategories();
-      console.log("Categorias encontradas:", categories);
       res.render("create", { categories });
     } catch (error) {
       console.error("Erro ao buscar categorias:", error);
@@ -43,16 +42,13 @@ module.exports = {
 
   async saveNewIdea(req, res) {
     try {
-      await ideaService.create(req.body);
+      await ideaService.create(req.body, req.session.user.id);
+      req.flash("success_msg", "Ideia criada com sucesso!");
       res.redirect("/ideas");
     } catch (error) {
       console.error(error);
-      const categories = await ideaService.getAllCategories();
-      res.render("create", {
-        categories,
-        error: error.message,
-        data: req.body,
-      });
+      req.flash("error_msg", error.message);
+      res.redirect("/ideas/new");
     }
   },
 
@@ -72,13 +68,12 @@ module.exports = {
     const { id } = req.params;
     try {
       await ideaService.update(id, req.body);
+      req.flash("success_msg", "Ideia atualizada com sucesso!");
       res.redirect("/ideas");
     } catch (error) {
       console.error(error);
-      res.status(500).render("edit", {
-        idea: req.body,
-        error: error.message,
-      });
+      req.flash("error_msg", error.message);
+      res.redirect(`/ideas/${id}/edit`);
     }
   },
 
@@ -86,10 +81,12 @@ module.exports = {
     const { id } = req.params;
     try {
       await ideaService.delete(id);
+      req.flash("success_msg", "Ideia excluída com sucesso!");
       res.redirect("/ideas");
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: error.message });
+      req.flash("error_msg", error.message);
+      res.redirect("/ideas");
     }
   },
 };

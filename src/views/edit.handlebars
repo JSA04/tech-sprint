@@ -1,42 +1,38 @@
-<h2>Editar Ideia</h2>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <form action="/ideas/{{idea.id}}/update" method="POST" class="card p-4 shadow-sm">
+                <h3 class="mb-3">Editar Ideia</h3>
 
-{{#if error}}
-  <div class="alert alert-danger">{{error}}</div>
-{{/if}}
+                <input type="hidden" name="_csrf" value="{{csrfToken}}">
 
-<form action="/ideas/{{idea.id}}?_method=PUT" method="POST">
-  <div class="form-group">
-    <label for="title">Título:</label>
-    <input type="text" class="form-control" id="title" name="title" value="{{idea.title}}" required minlength="3" maxlength="100">
-  </div>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Título</label>
+                    <input class="form-control" type="text" name="title" value="{{idea.title}}" required minlength="3" maxlength="30">
+                </div>
 
-  <div class="form-group">
-    <label for="description">Descrição:</label>
-    <textarea class="form-control" id="description" name="description" rows="4" required>{{idea.description}}</textarea>
-  </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Descrição</label>
+                    <textarea class="form-control" name="description" rows="4" required>{{idea.description}}</textarea>
+                </div>
 
-  <div class="form-group">
-    <label for="categoryId">Categoria:</label>
-    <select class="form-control" id="categoryId" name="categoryId" required>
-      <option value="">Selecione uma categoria</option>
-      {{#each categories}}
-        <option value="{{this.id}}" {{#if (eq ../idea.categoryId this.id)}}selected{{/if}}>
-          {{this.name}}
-        </option>
-      {{/each}}
-    </select>
-  </div>
+                <div class="mb-3">
+                    <label for="categoryId" class="form-label">Categoria</label>
+                    <select class="form-select" name="categoryId" required>
+                        <option value="">Selecione uma categoria</option>
+                        {{#each categories}}
+                            <option value="{{this.id}}" {{#if (eq ../idea.categoryId this.id)}}selected{{/if}}>
+                                {{this.name}}
+                            </option>
+                        {{/each}}
+                    </select>
+                </div>
 
-  <div class="form-group">
-    <label for="status">Status:</label>
-    <select class="form-control" id="status" name="status" required>
-      <option value="Em Análise" {{#if (eq idea.status 'Em Análise')}}selected{{/if}}>Em Análise</option>
-      <option value="Aprovada" {{#if (eq idea.status 'Aprovada')}}selected{{/if}}>Aprovada</option>
-      <option value="Implementada" {{#if (eq idea.status 'Implementada')}}selected{{/if}}>Implementada</option>
-      <option value="Recusada" {{#if (eq idea.status 'Recusada')}}selected{{/if}}>Recusada</option>
-    </select>
-  </div>
-
-  <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-  <a href="/ideas" class="btn btn-secondary">Cancelar</a>
-</form>
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="/ideas" class="btn btn-secondary btn-sm">Voltar</a>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

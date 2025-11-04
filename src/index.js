@@ -1,22 +1,22 @@
-const express = require('express');
-const exphbs = require('express-handlebars');
-const session = require('express-session');
-const flash = require('express-flash');
-const path = require('path');
-const helmet = require('helmet');
-const csrf = require('csurf');
+const express = require("express");
+const exphbs = require("express-handlebars");
+const session = require("express-session");
+const flash = require("express-flash");
+const path = require("path");
+const helmet = require("helmet");
+const csrf = require("csurf");
 
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 // EXPRESS SETUP
-const conn = require('./db/conn');
+const conn = require("./db/conn");
 
-const Category = require('./models/Category');
-const Vote = require('./models/Vote');
-const Idea = require('./models/Idea');
-const User = require('./models/User');
+const Category = require("./models/Category");
+const Vote = require("./models/Vote");
+const Idea = require("./models/Idea");
+const User = require("./models/User");
 
-const userRoutes = require('./routes/userRoutes');
+const userRoutes = require("./routes/userRoutes");
 const ideaRoutes = require("./routes/ideaRoutes");
 
 const app = express();
@@ -26,9 +26,23 @@ const PORT = process.env.PORT || 3000;
 const hbs = exphbs.create({
   helpers: {
     eq: (a, b) => a === b,
+    formatDate: (date) => {
+      if (!date) return "";
+      return new Date(date).toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    },
   },
-  defaultLayout: 'main',
-  partialsDir: ['src/views/partials/']
+  defaultLayout: "main",
+  partialsDir: ["src/views/partials/"],
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true,
+  },
 });
 
 const csrfProtection = csrf();
@@ -36,11 +50,39 @@ const csrfProtection = csrf();
 // MIDDLEWARES
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public'));
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'));
+app.use(express.static("public"));
+app.engine("handlebars", hbs.engine);
+app.set("view engine", "handlebars");
+app.set("views", path.join(__dirname, "views"));
 
+// Segurança (relaxa CSP em desenvolvimento para evitar ruídos do DevTools)
+const isDev = process.env.NODE_ENV !== "production";
+if (isDev) {
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+    })
+  );
+} else {
+  app.use(helmet());
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'", "https:", "wss:"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'self'"],
+      },
+    })
+  );
+}
+
+// Sessão e Flash Messages
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -51,43 +93,36 @@ app.use(
 );
 app.use(flash());
 
-app.use(helmet());
-app.use(
-  helmet.contentSecurityPolicy({
-    useDefaults: true,
-    directives: {
-      "script-src": ["'self'", "'unsafe-inline'"],
-      "img-src": ["'self'", "data:"], 
-    },
-  })
-);
-
 app.use(csrfProtection);
 
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   res.locals.csrfToken = req.csrfToken();
-  res.locals.success_msg = req.flash('success_msg');
-  res.locals.error_msg = req.flash('error_msg');
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
   next();
 });
 
 app.use((err, req, res, next) => {
-  if (err.code === 'EBADCSRFTOKEN') {
-    req.flash('error_msg', 'Sessão expirada ou formulário inválido. Tente novamente.');
-    console.error('Erro de CSRF policy');
-    return res.redirect('/users/login');
+  if (err.code === "EBADCSRFTOKEN") {
+    req.flash(
+      "error_msg",
+      "Sessão expirada ou formulário inválido. Tente novamente."
+    );
+    console.error("Erro de CSRF policy");
+    return res.redirect("/users/login");
   }
+  return res.redirect("/ideas");
   next(err);
 });
 
-app.use('/users', userRoutes);
+app.use("/users", userRoutes);
 app.use("/ideas", ideaRoutes);
-app.get('/', (req, res) => res.redirect('/ideas'));
+app.get("/", (req, res) => res.redirect("/ideas"));
 
 // DATABASE CONNECTION AND SERVER START
 conn
-  .sync({ force: true }) // Isso vai recriar as tabelas
+  .sync() // Mantém os dados existentes
   .then(() => {
     const startServer = (port) => {
       const server = app

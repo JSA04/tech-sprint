@@ -1,14 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const ideaController = require("../controllers/ideaController");
+const { checkAuth } = require("../middlewares/authMiddleware");
 
-// Definindo as rotas
+// Middleware de autenticação para todas as rotas de ideias
+router.use(checkAuth);
 router.get("/", ideaController.findAllIdeas);
 router.get("/new", ideaController.createIdeaForm);
 router.post("/", ideaController.saveNewIdea);
-router.get("/:id", ideaController.findIdeaById);
+// Coloque a rota de editar antes da rota de buscar por id para evitar captura por ":id"
 router.get("/:id/edit", ideaController.editIdeaForm);
-router.put("/:id", ideaController.updateIdea);
-router.delete("/:id", ideaController.deleteIdea);
+router.get("/:id", ideaController.findIdeaById);
+// Fluxo ao estilo User: apenas POST para mudanças de estado
+router.post("/:id/update", ideaController.updateIdea);
+router.post("/:id/delete", ideaController.deleteIdea);
 
 module.exports = router;
