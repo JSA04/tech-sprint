@@ -4,7 +4,9 @@ module.exports = {
   async findAllIdeas(req, res) {
     try {
       const ideas = await ideaService.findAll();
-      res.render("all", { ideas });
+      res.render("all", {
+        ideas,
+      });
     } catch (error) {
       console.error(error);
       res.status(500).render("all", {
@@ -18,7 +20,7 @@ module.exports = {
     const { id } = req.params;
     try {
       const idea = await ideaService.findById(id);
-      res.render("all", { ideas: [idea] });
+      res.render("show", { idea });
     } catch (error) {
       console.error(error);
       res
@@ -67,7 +69,7 @@ module.exports = {
   async updateIdea(req, res) {
     const { id } = req.params;
     try {
-      await ideaService.update(id, req.body);
+      await ideaService.update(id, req.body, req.session.user.id);
       req.flash("success_msg", "Ideia atualizada com sucesso!");
       res.redirect("/ideas");
     } catch (error) {

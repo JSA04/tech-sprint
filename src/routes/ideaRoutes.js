@@ -8,10 +8,10 @@ router.use(checkAuth);
 router.get("/", ideaController.findAllIdeas);
 router.get("/new", ideaController.createIdeaForm);
 router.post("/", ideaController.saveNewIdea);
-// Coloque a rota de editar antes da rota de buscar por id para evitar captura por ":id"
+
 router.get("/:id/edit", ideaController.editIdeaForm);
 router.get("/:id", ideaController.findIdeaById);
-// Fluxo ao estilo User: apenas POST para mudanças de estado
+
 router.post("/:id/update", ideaController.updateIdea);
 router.post("/:id/delete", ideaController.deleteIdea);
 

@@ -64,7 +64,11 @@ class IdeaService {
     }
   }
 
-  async update(id, ideaData) {
+  async update(id, ideaData, userId) {
+    if (userId != ideaData.created_by) {
+      throw new Error("Usuário não autorizado a atualizar esta ideia");
+      console.log('hello world')
+    }
     try {
       const idea = await this.findById(id);
 

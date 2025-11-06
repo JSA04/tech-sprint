@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10 col-xl-8">
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="/ideas">Ideias</a></li>
+          <li
+            class="breadcrumb-item active"
+            aria-current="page"
+          >{{idea.title}}</li>
+        </ol>
+      </nav>
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+          <h2 class="mb-1">Detalhes da Ideia</h2>
+          <small class="text-muted">Você está vendo a página de detalhes desta
+            ideia</small>
+        </div>
+        <a href="/ideas" class="btn btn-outline-secondary btn-sm">← Voltar</a>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between mb-2">
+            <h3 class="card-title mb-0">{{idea.title}}</h3>
+            <span class="badge text-bg-secondary">{{idea.category.name}}</span>
+          </div>
+          <div class="text-muted mb-3">
+            <small>
+              Criada por:
+              <strong>{{idea.creator.name}}</strong>
+              • em
+              {{formatDate idea.createdAt}}
+            </small>
+          </div>
+
+          <div class="mb-4">
+            <h6 class="text-uppercase text-muted fw-semibold">Descrição</h6>
+            <p class="card-text">{{idea.description}}</p>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2">
+            <a href="/ideas" class="btn btn-outline-secondary">Voltar</a>
+              {{!-- {{#if (eq @root.user.id this.idea.creator.id)}} --}}
+                <a href="/ideas/{{idea.id}}/edit" class="btn btn-primary">✏️ Editar</a>
+                <form
+                  class="d-inline-block m-0"
+                  action="/ideas/{{idea.id}}/delete"
+                  method="POST"
+                  onsubmit="return confirm('Tem certeza que deseja excluir esta ideia?')"
+                >
+                  <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+                  <button type="submit" class="btn btn-danger">🗑️ Excluir</button>
+              {{!-- {{/if}} --}}
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

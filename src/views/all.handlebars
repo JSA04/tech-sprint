@@ -21,13 +21,15 @@
             <div class="small text-muted">Criada por: {{this.creator.name}} em {{formatDate this.createdAt}}</div>
             <div class="d-flex flex-nowrap gap-2 align-items-center mt-3">
               <a href="/ideas/{{this.id}}" class="btn btn-primary btn-sm">👁️ Visualizar</a>
-              <a href="/ideas/{{this.id}}/edit" class="btn btn-outline-primary btn-sm">✏️ Editar</a>
-              <form class="d-inline-block m-0 flex-shrink-0" action="/ideas/{{this.id}}/delete" method="POST">
-                <input type="hidden" name="_csrf" value="{{../csrfToken}}">
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta ideia?')">
-                  🗑️ Excluir
-                </button>
-              </form>
+              {{#if (eq @root.user.id this.creator.id)}}
+                <a href="/ideas/{{this.id}}/edit" class="btn btn-outline-primary btn-sm">✏️ Editar</a>
+                <form class="d-inline-block m-0 flex-shrink-0" action="/ideas/{{this.id}}/delete" method="POST">
+                  <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta ideia?')">
+                    🗑️ Excluir
+                  </button>
+                </form>
+             {{/if}}
             </div>
           </div>
         </div>

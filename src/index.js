@@ -25,7 +25,10 @@ const PORT = process.env.PORT || 3000;
 
 const hbs = exphbs.create({
   helpers: {
-    eq: (a, b) => a === b,
+    eq: (a, b) => {
+      // Converte ambos para string para comparação segura
+      return String(a) === String(b);
+    },
     formatDate: (date) => {
       if (!date) return "";
       return new Date(date).toLocaleDateString("pt-BR", {
@@ -122,7 +125,7 @@ app.get("/", (req, res) => res.redirect("/ideas"));
 
 // DATABASE CONNECTION AND SERVER START
 conn
-  .sync() // Mantém os dados existentes
+  .sync({ alter: true }) // Mantém os dados existentes
   .then(() => {
     const startServer = (port) => {
       const server = app
