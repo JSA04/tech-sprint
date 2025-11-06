@@ -18,6 +18,7 @@ const User = require("./models/User");
 
 const userRoutes = require("./routes/userRoutes");
 const ideaRoutes = require("./routes/ideaRoutes");
+const voteRoutes = require("./routes/voteRoutes");
 
 const app = express();
 
@@ -26,6 +27,10 @@ const PORT = process.env.PORT || 3000;
 const hbs = exphbs.create({
   helpers: {
     eq: (a, b) => a === b,
+    ne: (a, b) => a !== b,
+    or: function (a, b) {
+      return a || b;
+    },
     formatDate: (date) => {
       if (!date) return "";
       return new Date(date).toLocaleDateString("pt-BR", {
@@ -113,16 +118,19 @@ app.use((err, req, res, next) => {
     return res.redirect("/users/login");
   }
   return res.redirect("/ideas");
-  next(err);
 });
 
 app.use("/users", userRoutes);
 app.use("/ideas", ideaRoutes);
-app.get("/", (req, res) => res.redirect("/ideas"));
+app.use("/votes", voteRoutes);
+app.get("/", (req, res) => {
+  if(req.session.user) res.redirect("/ideas")
+  else res.redirect("/users/login")
+});
 
 // DATABASE CONNECTION AND SERVER START
 conn
-  .sync() // Mantém os dados existentes
+  .sync({ alter: true }) // Mantém os dados existentes
   .then(() => {
     const startServer = (port) => {
       const server = app

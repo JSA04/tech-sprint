@@ -4,23 +4,27 @@ const User = require('./User');
 const Idea = require('./Idea');
 
 const Vote = db.define('Vote', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        weight: {
+            type: DataTypes.INTEGER,
+            defaultValue: 1
+        },
+    }, 
+    {
+        tableName: "votes",
     },
-    weight: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1
-    },
-});
+);
 
 Vote.belongsTo(User, {
-    foreignKey: 'id',
-    as: 'userId'
+    foreignKey: 'userId',
+    as: 'user'
 });
 User.hasMany(Vote, {
-    foreignKey: 'id',
+    foreignKey: 'userId',
     as: 'votes',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
@@ -29,11 +33,11 @@ User.hasMany(Vote, {
 });
 
 Vote.belongsTo(Idea, {
-    foreignKey: 'id',
-    as: 'ideaId'
+    foreignKey: 'ideaId',
+    as: 'idea'
 });
 Idea.hasMany(Vote, {
-    foreignKey: 'id',
+    foreignKey: 'ideaId',
     as: 'votes',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'

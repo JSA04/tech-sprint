@@ -1,23 +1,66 @@
+const { fn, col, literal } = require('sequelize');
 const Idea = require("../models/Idea");
 const Category = require("../models/Category");
 const User = require("../models/User");
+const Vote = require("../models/Vote");
 
 class IdeaService {
-  async findAll() {
+  async findAll(userId) {
     try {
-      return await Idea.findAll({
+      const ideas = await Idea.findAll({
+        attributes: {
+          include: [
+            [
+              fn('GREATEST',
+                fn('COALESCE', fn('SUM', col('votes.weight')), 0),
+                0
+              ),
+              'voteScore'
+            ],
+            [
+              literal(`EXISTS (
+                SELECT 1 FROM votes AS v
+                WHERE v.ideaId = Idea.id AND v.userId = ${userId} AND v.weight = 1
+              )`),
+              'userAgreed'
+            ],
+            [
+              literal(`EXISTS (
+                SELECT 1 FROM votes AS v
+                WHERE v.ideaId = Idea.id AND v.userId = ${userId} AND v.weight = -1
+              )`),
+              'userDisagreed'
+            ]
+          ],
+        },
         include: [
           {
             model: Category,
-            as: "category",
+            as: 'category',
           },
           {
             model: User,
-            as: "creator",
-            attributes: ["id", "name"],
+            as: 'creator',
+            attributes: ['id', 'name'],
+          },
+          {
+            model: Vote,
+            as: 'votes',
+            attributes: [],
           },
         ],
-        order: [["createdAt", "DESC"]],
+        group: ['Idea.id', 'category.id', 'creator.id'],
+        order: [[fn('SUM', col('votes.weight')), 'DESC']],
+      });
+
+      return ideas.map(i => {
+        const data = i.toJSON();
+        return {
+          ...data,
+          voteScore: Number(data.voteScore) || 0,
+          userAgreed: Boolean(Number(data.userAgreed)),
+          userDisagreed: Boolean(Number(data.userDisagreed)),
+        };
       });
     } catch (error) {
       throw new Error("Erro ao buscar ideias: " + error.message);
@@ -57,7 +100,7 @@ class IdeaService {
         title: ideaData.title,
         description: ideaData.description,
         categoryId: ideaData.categoryId,
-        created_by: userId,
+        createdBy: userId,
       });
     } catch (error) {
       throw new Error("Erro ao criar ideia: " + error.message);
