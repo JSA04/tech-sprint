@@ -23,7 +23,12 @@
         <div class="card-body">
           <div class="d-flex align-items-start justify-content-between mb-2">
             <h3 class="card-title mb-0">{{idea.title}}</h3>
-            <span class="badge text-bg-secondary">{{idea.category.name}}</span>
+            <div class="d-flex align-items-center gap-2">
+              {{#if (eq @root.user.id idea.creator.id)}}
+                <span class="badge badge-owned">Criada por você</span>
+              {{/if}}
+              <span class="badge text-bg-secondary">{{idea.category.name}}</span>
+            </div>
           </div>
           <p>
             {{idea.voteScore}} pontos de votos
@@ -33,7 +38,7 @@
               <span class="text-danger fw-normal fs-7">(você votou contra)</span>
             {{/if}}
           </p>
-          <div class="text-muted mb-3">
+          <div class="text-muted mb-3 d-flex align-items-center gap-2">
             <span class="fs-7">
               Criada por:
               <strong>{{idea.creator.name}}</strong>
@@ -64,31 +69,29 @@
               {{/if}}
             </div>
 
-            {{#if (ne @root.user.id this.idea.creator.id)}}
-              <div class="d-flex flex-wrap gap-2">
-                <form action="/votes" method="POST" class="d-inline m-0">
+            <div class="d-flex flex-wrap gap-2">
+              <form action="/votes" method="POST" class="d-inline m-0">
+                <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                <input type="hidden" name="ideaId" value="{{idea.id}}">
+                <input type="hidden" name="voteType" value="agree">
+                <button type="submit" class="btn btn-success {{#if (or (eq @root.user.id idea.creator.id) idea.userAgreed)}}blocked{{/if}}">👍 A favor</button>
+              </form>
+
+              <form action="/votes" method="POST" class="d-inline m-0">
+                <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                <input type="hidden" name="ideaId" value="{{idea.id}}">
+                <input type="hidden" name="voteType" value="disagree">
+                <button type="submit" class="btn btn-danger {{#if (or (eq @root.user.id idea.creator.id) idea.userDisagreed)}}blocked{{/if}}">👎 Contra</button>
+              </form>
+
+              {{#if (or idea.userAgreed idea.userDisagreed)}}
+                <form action="/votes/clear" method="POST" class="d-inline m-0">
                   <input type="hidden" name="_csrf" value="{{csrfToken}}">
                   <input type="hidden" name="ideaId" value="{{idea.id}}">
-                  <input type="hidden" name="voteType" value="agree">
-                  <button type="submit" class="btn btn-success" {{#if idea.userAgreed}}disabled{{/if}}>👍 A favor</button>
+                  <button type="submit" class="btn btn-primary">🔄 Limpar voto</button>
                 </form>
-
-                <form action="/votes" method="POST" class="d-inline m-0">
-                  <input type="hidden" name="_csrf" value="{{csrfToken}}">
-                  <input type="hidden" name="ideaId" value="{{idea.id}}">
-                  <input type="hidden" name="voteType" value="disagree">
-                  <button type="submit" class="btn btn-danger" {{#if idea.userDisagreed}}disabled{{/if}}>👎 Contra</button>
-                </form>
-
-                {{#if (or idea.userAgreed idea.userDisagreed)}}
-                  <form action="/votes/clear" method="POST" class="d-inline m-0">
-                    <input type="hidden" name="_csrf" value="{{csrfToken}}">
-                    <input type="hidden" name="ideaId" value="{{idea.id}}">
-                    <button type="submit" class="btn btn-primary">🔄 Limpar voto</button>
-                  </form>
-                {{/if}}
-              </div>
-            {{/if}}
+              {{/if}}
+            </div>
           </div>
         </div>
       </div>
