@@ -2,6 +2,9 @@ const { DataTypes } = require("sequelize");
 const db = require("../db/conn");
 const Category = require("./Category");
 
+/**
+ * Entidade que representa as ideias no Banco de Dados
+ */
 const Idea = db.define(
   "Idea",
   {

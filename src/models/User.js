@@ -1,6 +1,9 @@
 const { DataTypes } = require("sequelize");
 const db = require("../db/conn");
 
+/**
+ * Entidade que representa os usuários no Banco de Dados
+ */
 const User = db.define(
   "User",
   {

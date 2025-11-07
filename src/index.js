@@ -1,4 +1,5 @@
 const express = require("express");
+require("express-async-errors");
 const exphbs = require("express-handlebars");
 const session = require("express-session");
 const flash = require("express-flash");
@@ -10,6 +11,7 @@ require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 // EXPRESS SETUP
 const conn = require("./db/conn");
+const sequelizeConnectionErros = require("./constants/sequelizeErrors");
 
 const Category = require("./models/Category");
 const Vote = require("./models/Vote");
@@ -110,18 +112,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use((err, req, res, next) => {
-  if (err.code === "EBADCSRFTOKEN") {
-    req.flash(
-      "error_msg",
-      "Sessão expirada ou formulário inválido. Tente novamente."
-    );
-    console.error("Erro de CSRF policy");
-    return res.redirect("/users/login");
-  }
-  return res.redirect("/ideas");
-});
-
 app.use("/users", userRoutes);
 app.use("/ideas", ideaRoutes);
 app.use("/votes", voteRoutes);
@@ -130,9 +120,27 @@ app.get("/", (req, res) => {
   else res.redirect("/users/login")
 });
 
+// ⚠️ Middleware global de tratamento de erros (deve ficar por último)
+app.use((err, req, res, next) => {
+  if (err.code === "EBADCSRFTOKEN") {
+    req.flash("error_msg", "Sessão expirada ou formulário inválido. Tente novamente.");
+    return res.redirect("/users/login");
+  }
+
+  if (sequelizeConnectionErros.includes(err.name)) {
+    req.flash("error_msg", "Erro de conexão com o banco de dados. Tente novamente mais tarde.");
+    return res.redirect("/ideas");
+  }
+
+  console.error('Erro inesperado:', err);
+  req.flash("error_msg", "Ocorreu um erro inesperado. Tente novamente mais tarde.");
+  res.redirect("/ideas");
+});
+
+
 // DATABASE CONNECTION AND SERVER START
 conn
-  .sync({ alter: true }) // Mantém os dados existentes
+  .sync({ alter: false }) // Mantém os dados existentes
   .then(() => {
     const startServer = (port) => {
       const server = app

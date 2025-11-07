@@ -1,6 +1,10 @@
 const { Sequelize } = require("sequelize");
 require("dotenv").config();
 
+/** 
+* Configurações de conexão da aplicação
+* Lembre-se de preencher as informações do Banco de Dados no .env corretamente!
+*/
 const sequelize = new Sequelize(
   process.env.DB_SEQUELIZE_DATABASE,
   process.env.DB_USER,

@@ -1,12 +1,12 @@
 const messages = document.querySelectorAll('.flash-message');
 
 messages.forEach((msg) => {
-    // Fechar manualmente
+    // Ao clicar no botão de fechar, a mensagem deve ser removida da interface
     msg.querySelector('.btn-close').addEventListener('click', () => {
         msg.remove();
     });
 
-    // Fechar automaticamente após 4 segundos
+    // Após 4 segundos, a mensagem deve ser removida da interface
     setTimeout(() => {
         msg.remove();
     }, 4000);
