@@ -26,7 +26,9 @@ const PORT = process.env.PORT || 3000;
 
 const hbs = exphbs.create({
   helpers: {
-    eq: (a, b) => a === b,
+    eq: (a, b) => {
+      return String(a) === String(b);
+    },
     ne: (a, b) => a !== b,
     or: function (a, b) {
       return a || b;

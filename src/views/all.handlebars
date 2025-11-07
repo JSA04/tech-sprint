@@ -15,7 +15,7 @@
             </div>
             <div class="mb-2 text-muted">
               <span class="badge text-bg-secondary">{{this.category.name}}</span>
-            </div>
+            </div>              
             <p class="card-text text-truncate-3">{{this.description}}</p>
             <div class="small text-muted">
               Criada por: {{this.creator.name}} em {{formatDate this.createdAt}}
@@ -25,11 +25,13 @@
             <h6 class="text-secondary fw-bold mt-2">Ações</h6>
             <div class="d-flex flex-nowrap gap-2 align-items-center">
               <a href="/ideas/{{this.id}}" class="btn btn-primary btn-sm">👁️</a>
-              <a href="/ideas/{{this.id}}/edit" class="btn btn-warning btn-sm">✏️</a>
-              <form class="d-inline-block m-0 flex-shrink-0" action="/ideas/{{this.id}}/delete" method="POST">
-                <input type="hidden" name="_csrf" value="{{../csrfToken}}">
-                <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
-              </form>
+              {{#if (eq @root.user.id this.creator.id)}}
+                <a href="/ideas/{{this.id}}/edit" class="btn btn-warning btn-sm">✏️</a>
+                <form class="d-inline-block m-0 flex-shrink-0" action="/ideas/{{this.id}}/delete" method="POST">
+                  <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+                  <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
+                </form>
+              {{/if}}
             </div>
 
             <!-- Botões de voto -->
