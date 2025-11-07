@@ -23,7 +23,12 @@
         <div class="card-body">
           <div class="d-flex align-items-start justify-content-between mb-2">
             <h3 class="card-title mb-0">{{idea.title}}</h3>
-            <span class="badge text-bg-secondary">{{idea.category.name}}</span>
+            <div class="d-flex align-items-center gap-2">
+              {{#if (eq @root.user.id idea.creator.id)}}
+                <span class="badge badge-owned">Criada por você</span>
+              {{/if}}
+              <span class="badge text-bg-secondary">{{idea.category.name}}</span>
+            </div>
           </div>
           <p>
             {{idea.voteScore}} pontos de votos
@@ -40,9 +45,6 @@
               • em
               {{formatDate idea.createdAt}}
             </span>
-            {{#if (eq @root.user.id idea.creator.id)}}
-              <span class="badge badge-owned">Criada por você</span>
-            {{/if}}
           </div>
 
           <div class="mb-4">

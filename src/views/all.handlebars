@@ -14,14 +14,14 @@
               <span>{{this.voteScore}} pontos de votos</span>
             </div>
             <div class="mb-2 text-muted">
+              {{#if (eq @root.user.id this.creator.id)}}
+                <span class="badge badge-owned">Criada por você</span>
+              {{/if}}
               <span class="badge text-bg-secondary">{{this.category.name}}</span>
             </div>              
             <p class="card-text text-truncate-3">{{this.description}}</p>
             <div class="small text-muted d-flex align-items-center gap-2">
               Criada por: {{this.creator.name}} em {{formatDate this.createdAt}}
-              {{#if (eq @root.user.id this.creator.id)}}
-                <span class="badge badge-owned">Criada por você</span>
-              {{/if}}
             </div>
 
             <!-- Botões de ações -->
