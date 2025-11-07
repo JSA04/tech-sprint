@@ -17,7 +17,7 @@ module.exports = {
   async findIdeaById(req, res) {
     const { id } = req.params;
     try {
-      const idea = await ideaService.findById(id);
+      const idea = await ideaService.findById(id, req.session.user.id);
       res.render("show", { idea });
     } catch (error) {
       console.error(error);

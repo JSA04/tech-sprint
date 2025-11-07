@@ -67,10 +67,35 @@ class IdeaService {
     }
   }
 
-  async findById(id) {
+  async findById(id, userId) {
     try {
       const idea = await Idea.findOne({
         where: { id },
+        attributes: {
+          include: [
+            [
+              fn('GREATEST',
+                fn('COALESCE', fn('SUM', col('votes.weight')), 0),
+                0
+              ),
+              'voteScore'
+            ],
+            [
+              literal(`EXISTS (
+                SELECT 1 FROM votes AS v
+                WHERE v.ideaId = Idea.id AND v.userId = ${userId} AND v.weight = 1
+              )`),
+              'userAgreed'
+            ],
+            [
+              literal(`EXISTS (
+                SELECT 1 FROM votes AS v
+                WHERE v.ideaId = Idea.id AND v.userId = ${userId} AND v.weight = -1
+              )`),
+              'userDisagreed'
+            ]
+          ],
+        },
         include: [
           {
             model: Category,
@@ -81,14 +106,26 @@ class IdeaService {
             as: "creator",
             attributes: ["id", "name"],
           },
+          {
+            model: Vote,
+            as: 'votes',
+            attributes: [],
+          },
         ],
+        group: ['Idea.id', 'category.id', 'creator.id'],
       });
 
       if (!idea) {
         throw new Error("Ideia não encontrada");
       }
 
-      return idea;
+      const data = idea.toJSON();
+      return {
+        ...data,
+        voteScore: Number(data.voteScore) || 0,
+        userAgreed: Boolean(Number(data.userAgreed)),
+        userDisagreed: Boolean(Number(data.userDisagreed)),
+      };
     } catch (error) {
       throw new Error("Erro ao buscar ideia: " + error.message);
     }
