@@ -1,7 +1,5 @@
 const { validationResult } = require("express-validator");
 
-// Handler de validação para usar nas rotas com express-validator
-// routeOnError: string ou function(req) => string
 function handleValidation(routeOnError) {
   return (req, res, next) => {
     const errors = validationResult(req);

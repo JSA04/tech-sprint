@@ -3,7 +3,7 @@ const router = express.Router();
 const ideaController = require("../controllers/ideaController");
 const { checkAuth } = require("../middlewares/authMiddleware");
 const { body, param } = require("express-validator");
-const { handleValidation } = require("./helpers/validation");
+const { handleValidation } = require("./helpers/validationHelper");
 
 // Middleware de autenticação para todas as rotas de ideias
 router.get("/", checkAuth, ideaController.findAllIdeas);
@@ -25,7 +25,7 @@ router.post(
   handleValidation("/ideas/new"),
   ideaController.saveNewIdea
 );
-// Coloque a rota de editar antes da rota de buscar por id para evitar captura por ":id"
+
 router.get(
   "/:id/edit",
   checkAuth,
@@ -40,7 +40,7 @@ router.get(
   handleValidation("/ideas"),
   ideaController.findIdeaById
 );
-// Fluxo ao estilo User: apenas POST para mudanças de estado
+
 router.post(
   "/:id/update",
   checkAuth,
