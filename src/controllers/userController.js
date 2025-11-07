@@ -14,7 +14,7 @@ async function createUser(req, res) {
             email: user.email,
          });
         req.flash('success_msg', 'Usuário cadatrado!');
-        res.redirect('/users/signup');
+        res.redirect('/ideas');
     } catch(error) {
         req.flash('error_msg', error.message);
         res.redirect('/users/signup');
@@ -37,7 +37,7 @@ async function loginUser(req, res) {
             email: user.email,
         });
         req.flash('success_msg', `Olá, ${user.name}!`);
-        res.redirect('/users/login');
+        res.redirect('/ideas');
     } catch(error) {
         req.flash('error_msg', error.message);
         res.redirect('/users/login');
