@@ -45,7 +45,7 @@ Idea.belongsTo(Category, {
 
 const User = require("./User");
 Idea.belongsTo(User, {
-  foreignKey: "created_by",
+  foreignKey: "createdBy",
   as: "creator",
 });
 

@@ -4,15 +4,14 @@ const ideaController = require("../controllers/ideaController");
 const { checkAuth } = require("../middlewares/authMiddleware");
 
 // Middleware de autenticação para todas as rotas de ideias
-router.use(checkAuth);
-router.get("/", ideaController.findAllIdeas);
-router.get("/new", ideaController.createIdeaForm);
-router.post("/", ideaController.saveNewIdea);
-
-router.get("/:id/edit", ideaController.editIdeaForm);
-router.get("/:id", ideaController.findIdeaById);
-
-router.post("/:id/update", ideaController.updateIdea);
-router.post("/:id/delete", ideaController.deleteIdea);
+router.get("/", checkAuth, ideaController.findAllIdeas);
+router.get("/new", checkAuth, ideaController.createIdeaForm);
+router.post("/", checkAuth, ideaController.saveNewIdea);
+// Coloque a rota de editar antes da rota de buscar por id para evitar captura por ":id"
+router.get("/:id/edit", checkAuth, ideaController.editIdeaForm);
+router.get("/:id", checkAuth, ideaController.findIdeaById);
+// Fluxo ao estilo User: apenas POST para mudanças de estado
+router.post("/:id/update", checkAuth, ideaController.updateIdea);
+router.post("/:id/delete", checkAuth, ideaController.deleteIdea);
 
 module.exports = router;

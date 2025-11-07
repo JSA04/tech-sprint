@@ -1,9 +1,5 @@
 <h2 class="mb-3">Todas as Ideias</h2>
 
-{{#if error}}
-  <div class="alert alert-danger">{{error}}</div>
-{{/if}}
-
 {{#if ideas.length}}
   <div class="d-flex justify-content-end mb-3">
     <a href="/ideas/new" class="btn btn-primary">+ Nova Ideia</a>
@@ -13,24 +9,65 @@
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="card h-100 shadow-sm">
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title mb-2">{{this.title}}</h5>
+            <div class="d-flex justify-content-between">
+              <h5 class="card-title mb-2">{{this.title}}</h5>
+              <span>{{this.voteScore}} pontos de votos</span>
+            </div>
             <div class="mb-2 text-muted">
               <span class="badge text-bg-secondary">{{this.category.name}}</span>
+            </div>              
+            <p class="card-text text-truncate-3">{{this.description}}</p>
+            <div class="small text-muted">
+              Criada por: {{this.creator.name}} em {{formatDate this.createdAt}}
             </div>
-            <p class="card-text flex-grow-1">{{this.description}}</p>
-            <div class="small text-muted">Criada por: {{this.creator.name}} em {{formatDate this.createdAt}}</div>
-            <div class="d-flex flex-nowrap gap-2 align-items-center mt-3">
-              <a href="/ideas/{{this.id}}" class="btn btn-primary btn-sm">👁️ Visualizar</a>
+
+            <!-- Botões de ações -->
+            <h6 class="text-secondary fw-bold mt-2">Ações</h6>
+            <div class="d-flex flex-nowrap gap-2 align-items-center">
+              <a href="/ideas/{{this.id}}" class="btn btn-primary btn-sm">👁️</a>
               {{#if (eq @root.user.id this.creator.id)}}
-                <a href="/ideas/{{this.id}}/edit" class="btn btn-outline-primary btn-sm">✏️ Editar</a>
+                <a href="/ideas/{{this.id}}/edit" class="btn btn-warning btn-sm">✏️</a>
                 <form class="d-inline-block m-0 flex-shrink-0" action="/ideas/{{this.id}}/delete" method="POST">
                   <input type="hidden" name="_csrf" value="{{../csrfToken}}">
-                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir esta ideia?')">
-                    🗑️ Excluir
-                  </button>
+                  <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
                 </form>
-             {{/if}}
+              {{/if}}
             </div>
+
+            <!-- Botões de voto -->
+            {{#if (ne this.creator.id @root.user.id)  }}
+              <h6 class="text-secondary fw-bold d-flex align-items-end gap-2 mt-2">
+                Votos
+                {{#if this.userAgreed}}
+                  <span class="text-success fw-normal fs-7">(você votou a favor)</span>
+                {{else if this.userDisagreed}}
+                  <span class="text-danger fw-normal fs-7">(você votou contra)</span>
+                {{/if}}
+              </h6>
+              <div class="d-flex align-items-center gap-2">
+                <form action="/votes" method="POST" class="d-inline">
+                  <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+                  <input type="hidden" name="ideaId" value="{{this.id}}">
+                  <input type="hidden" name="voteType" value="agree">
+                  <button type="submit" class="btn btn-success btn-sm" {{#if this.userAgreed}}disabled{{/if}}>👍</button>
+                </form>
+
+                <form action="/votes" method="POST" class="d-inline">
+                  <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+                  <input type="hidden" name="ideaId" value="{{this.id}}">
+                  <input type="hidden" name="voteType" value="disagree">
+                  <button type="submit" class="btn btn-danger btn-sm" {{#if this.userDisagreed}}disabled{{/if}}>👎</button>
+                </form>
+
+                {{#if (or this.userAgreed this.userDisagreed)}}
+                  <form action="/votes/clear" method="POST" class="d-inline">
+                    <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+                    <input type="hidden" name="ideaId" value="{{this.id}}">
+                    <button type="submit" class="btn btn-primary btn-sm">🔄</button>
+                  </form>
+                {{/if}}
+              </div>
+            {{/if}}
           </div>
         </div>
       </div>

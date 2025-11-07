@@ -18,6 +18,7 @@ const User = require("./models/User");
 
 const userRoutes = require("./routes/userRoutes");
 const ideaRoutes = require("./routes/ideaRoutes");
+const voteRoutes = require("./routes/voteRoutes");
 
 const app = express();
 
@@ -26,8 +27,11 @@ const PORT = process.env.PORT || 3000;
 const hbs = exphbs.create({
   helpers: {
     eq: (a, b) => {
-      // Converte ambos para string para comparação segura
       return String(a) === String(b);
+    },
+    ne: (a, b) => a !== b,
+    or: function (a, b) {
+      return a || b;
     },
     formatDate: (date) => {
       if (!date) return "";
@@ -73,7 +77,7 @@ if (isDev) {
       directives: {
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "'unsafe-inline'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
         imgSrc: ["'self'", "data:", "https:"],
         connectSrc: ["'self'", "https:", "wss:"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
@@ -116,12 +120,15 @@ app.use((err, req, res, next) => {
     return res.redirect("/users/login");
   }
   return res.redirect("/ideas");
-  next(err);
 });
 
 app.use("/users", userRoutes);
 app.use("/ideas", ideaRoutes);
-app.get("/", (req, res) => res.redirect("/ideas"));
+app.use("/votes", voteRoutes);
+app.get("/", (req, res) => {
+  if(req.session.user) res.redirect("/ideas")
+  else res.redirect("/users/login")
+});
 
 // DATABASE CONNECTION AND SERVER START
 conn

@@ -3,10 +3,8 @@ const ideaService = require("../services/IdeaService");
 module.exports = {
   async findAllIdeas(req, res) {
     try {
-      const ideas = await ideaService.findAll();
-      res.render("all", {
-        ideas,
-      });
+      const ideas = await ideaService.findAll(req.session.user.id);
+      res.render("all", { ideas });
     } catch (error) {
       console.error(error);
       res.status(500).render("all", {
