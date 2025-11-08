@@ -96,4 +96,17 @@ module.exports = {
       res.redirect("/ideas");
     }
   },
+  
+  async findIdeasByUser(req, res) {
+    try {
+      const ideas = await ideaService.findByUser(req.session.user.id);
+      res.render("userIdeas", { ideas });
+    } catch (error) {
+      console.error(error);
+      res.status(500).render("userIdeas", {
+        ideas: [],
+        error: error.message,
+      });
+    }
+  }
 };
