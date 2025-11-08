@@ -100,10 +100,10 @@ module.exports = {
   async findIdeasByUser(req, res) {
     try {
       const ideas = await ideaService.findByUser(req.session.user.id);
-      res.render("userIdeas", { ideas });
+      res.render("profile", { ideas });
     } catch (error) {
       console.error(error);
-      res.status(500).render("userIdeas", {
+      res.status(500).render("profile", {
         ideas: [],
         error: error.message,
       });
