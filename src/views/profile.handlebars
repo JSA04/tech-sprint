@@ -1,0 +1,23 @@
+<h2 class="mb-3">Perfil do Usuário</h2>
+
+<div class="card mb-4 shadow-sm">
+  <div class="card-body">
+    <h4 class="card-title">{{user.name}}</h4>
+    <p class="card-text mb-0"><strong>Email:</strong> {{user.email}}</p>
+  </div>
+</div>
+
+<h3 class="mb-3">Ideias Criadas</h3>
+
+{{#if ideas.length}}
+  <div class="row g-3">
+    {{#each ideas}}
+      {{> ideaCard this}}
+    {{/each}}
+  </div>
+{{else}}
+  <div class="empty-state">
+    <p>😎 Nenhuma ideia criada ainda. Bora começar?</p>
+    <a href="/ideas/new" class="btn btn-primary">Criar Primeira Ideia</a>
+  </div>
+{{/if}}
