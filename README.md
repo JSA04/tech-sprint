@@ -77,6 +77,7 @@ npm run dev
 |:-------|:------|:-----------|
 | **GET** | `/ideas` | Lista todas as ideias |
 | **GET** | `/ideas/:id` | Exibe detalhes de uma ideia específica |
+| **GET** | `/user` | Exibe as ideias no perfil do usuário |
 | **GET** | `/ideas/new` | Renderiza o formulário de criação de ideia |
 | **GET** | `/ideas/:id/edit` | Renderiza o formulário de edição de ideia |
 | **POST** | `/ideas` | Cria uma nova ideia |
