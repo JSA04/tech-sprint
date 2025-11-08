@@ -1,4 +1,4 @@
-const { fn, col, literal } = require('sequelize');
+const { fn, col, literal } = require("sequelize");
 const Idea = require("../models/Idea");
 const Category = require("../models/Category");
 const User = require("../models/User");
@@ -11,49 +11,50 @@ class IdeaService {
         attributes: {
           include: [
             [
-              fn('GREATEST',
-                fn('COALESCE', fn('SUM', col('votes.weight')), 0),
+              fn(
+                "GREATEST",
+                fn("COALESCE", fn("SUM", col("votes.weight")), 0),
                 0
               ),
-              'voteScore'
+              "voteScore",
             ],
             [
               literal(`EXISTS (
                 SELECT 1 FROM votes AS v
                 WHERE v.ideaId = Idea.id AND v.userId = ${userId} AND v.weight = 1
               )`),
-              'userAgreed'
+              "userAgreed",
             ],
             [
               literal(`EXISTS (
                 SELECT 1 FROM votes AS v
                 WHERE v.ideaId = Idea.id AND v.userId = ${userId} AND v.weight = -1
               )`),
-              'userDisagreed'
-            ]
+              "userDisagreed",
+            ],
           ],
         },
         include: [
           {
             model: Category,
-            as: 'category',
+            as: "category",
           },
           {
             model: User,
-            as: 'creator',
-            attributes: ['id', 'name'],
+            as: "creator",
+            attributes: ["id", "name"],
           },
           {
             model: Vote,
-            as: 'votes',
+            as: "votes",
             attributes: [],
           },
         ],
-        group: ['Idea.id', 'category.id', 'creator.id'],
-        order: [[fn('SUM', col('votes.weight')), 'DESC']],
+        group: ["Idea.id", "category.id", "creator.id"],
+        order: [[fn("SUM", col("votes.weight")), "DESC"]],
       });
 
-      return ideas.map(i => {
+      return ideas.map((i) => {
         const data = i.toJSON();
         return {
           ...data,
@@ -69,33 +70,40 @@ class IdeaService {
 
   async findById(id, userId) {
     try {
-      const idea = await Idea.findOne({
-        where: { id },
-        attributes: {
-          include: [
-            [
-              fn('GREATEST',
-                fn('COALESCE', fn('SUM', col('votes.weight')), 0),
-                0
-              ),
-              'voteScore'
-            ],
-            [
-              literal(`EXISTS (
+      const includeAttributes = [
+        [
+          fn("GREATEST", fn("COALESCE", fn("SUM", col("votes.weight")), 0), 0),
+          "voteScore",
+        ],
+      ];
+
+      if (userId) {
+        includeAttributes.push(
+          [
+            literal(`EXISTS (
                 SELECT 1 FROM votes AS v
                 WHERE v.ideaId = Idea.id AND v.userId = ${userId} AND v.weight = 1
               )`),
-              'userAgreed'
-            ],
-            [
-              literal(`EXISTS (
+            "userAgreed",
+          ],
+          [
+            literal(`EXISTS (
                 SELECT 1 FROM votes AS v
                 WHERE v.ideaId = Idea.id AND v.userId = ${userId} AND v.weight = -1
               )`),
-              'userDisagreed'
-            ]
-          ],
-        },
+            "userDisagreed",
+          ]
+        );
+      } else {
+        includeAttributes.push(
+          [literal("0"), "userAgreed"],
+          [literal("0"), "userDisagreed"]
+        );
+      }
+
+      const idea = await Idea.findOne({
+        where: { id },
+        attributes: { include: includeAttributes },
         include: [
           {
             model: Category,
@@ -108,11 +116,11 @@ class IdeaService {
           },
           {
             model: Vote,
-            as: 'votes',
+            as: "votes",
             attributes: [],
           },
         ],
-        group: ['Idea.id', 'category.id', 'creator.id'],
+        group: ["Idea.id", "category.id", "creator.id"],
       });
 
       if (!idea) {
@@ -207,12 +215,12 @@ class IdeaService {
   }
 
   async update(id, ideaData, userId) {
-    if (userId != ideaData.created_by) {
-      throw new Error("Usuário não autorizado a atualizar esta ideia");
-      console.log('hello world')
-    }
     try {
-      const idea = await this.findById(id);
+      const idea = await Idea.findOne({ where: { id, createdBy: userId } });
+
+      if (!idea) {
+        throw new Error("Usuário não autorizado a atualizar esta ideia");
+      }
 
       await idea.update({
         title: ideaData.title,
@@ -226,9 +234,12 @@ class IdeaService {
     }
   }
 
-  async delete(id) {
+  async delete(id, userId) {
     try {
-      const idea = await this.findById(id);
+      const idea = await Idea.findOne({ where: { id, createdBy: userId } });
+      if (!idea) {
+        throw new Error("Usuário não autorizado a excluir esta ideia");
+      }
       await idea.destroy();
       return true;
     } catch (error) {

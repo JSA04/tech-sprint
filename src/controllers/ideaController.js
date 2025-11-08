@@ -55,7 +55,14 @@ module.exports = {
   async editIdeaForm(req, res) {
     const { id } = req.params;
     try {
-      const idea = await ideaService.findById(id);
+      const idea = await ideaService.findById(id, req.session.user.id);
+      if (idea.createdBy !== req.session.user.id) {
+        req.flash(
+          "error_msg",
+          "Você não tem permissão para editar esta ideia."
+        );
+        return res.redirect("/ideas");
+      }
       const categories = await ideaService.getAllCategories();
       res.render("edit", { idea, categories });
     } catch (error) {
@@ -80,7 +87,7 @@ module.exports = {
   async deleteIdea(req, res) {
     const { id } = req.params;
     try {
-      await ideaService.delete(id);
+      await ideaService.delete(id, req.session.user.id);
       req.flash("success_msg", "Ideia excluída com sucesso!");
       res.redirect("/ideas");
     } catch (error) {
