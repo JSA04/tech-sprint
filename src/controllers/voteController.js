@@ -1,4 +1,4 @@
-const voteService = require('../services/voteService');
+const voteService = require("../services/voteService");
 
 /**
 * Votar em uma ideia
@@ -11,7 +11,7 @@ async function vote(req, res) {
       isAgreement: req.body.voteType === 'agree',
     });
     req.flash('success_msg', 'Voto adicionado com sucesso!');
-    return res.status(201).redirect('/ideas');
+    return res.status(201).redirect(req.get("referer") || "/ideas");
   } catch (error) {
     req.flash('error_msg', error.message);
     return res.status(400).redirect('/ideas');

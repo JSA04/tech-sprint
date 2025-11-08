@@ -19,6 +19,15 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="mainNavbar">
+          
+          <!-- 🧭 Links principais -->
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="/ideas/user">Perfil</a>
+            </li>
+          </ul>
+
+          <!-- 👤 Área do usuário -->
           <div class="d-flex align-items-center gap-2 ms-auto">
             {{#if user}}
               <span class="badge text-bg-light text-dark">Olá, {{user.name}}</span>
@@ -35,6 +44,7 @@
       </div>
     </nav>
   </header>
+
   <main class="container py-4">
     {{> messages }}
     {{{ body }}}

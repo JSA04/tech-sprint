@@ -29,6 +29,19 @@ async function renderIdea(req, res) {
 };
 
 /**
+* Renderizar ideia do usuário no perfil
+*/
+async function renderUserIdeas(req, res) {
+  try {
+    const ideas = await ideaService.findIdeasByUser(req.session.user.id);
+    res.status(200).render("profile", { ideas });
+  } catch (error) {
+    req.flash("error_msg", error.message);
+    res.status(500).render("profile", { ideas: [] });
+  }
+}
+
+/**
 * Renderizar o formulário de ideia
 */
 async function renderCreateIdea(req, res) {
@@ -111,6 +124,7 @@ async function deleteIdea(req, res) {
 module.exports = {
   renderIdeas,
   renderIdea,
+  renderUserIdeas,
   renderCreateIdea,
   renderEditIdea,
   createIdea,
