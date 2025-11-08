@@ -7,6 +7,8 @@ const { checkAuth } = require("../middlewares/authMiddleware");
 router.get("/", checkAuth, ideaController.findAllIdeas);
 router.get("/new", checkAuth, ideaController.createIdeaForm);
 router.post("/", checkAuth, ideaController.saveNewIdea);
+// Fluxo de informações e ideias do usuário
+router.get("/user", checkAuth, ideaController.findIdeasByUser);
 // Coloque a rota de editar antes da rota de buscar por id para evitar captura por ":id"
 router.get("/:id/edit", checkAuth, ideaController.editIdeaForm);
 router.get("/:id", checkAuth, ideaController.findIdeaById);

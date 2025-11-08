@@ -131,6 +131,68 @@ class IdeaService {
     }
   }
 
+  async findByUser(userId) {
+    try {
+      const ideas = await Idea.findAll({
+        where: { createdBy: userId },
+        attributes: {
+          include: [
+            [
+              fn('GREATEST',
+                fn('COALESCE', fn('SUM', col('votes.weight')), 0),
+                0
+              ),
+              'voteScore'
+            ],
+            [
+              literal(`EXISTS (
+                SELECT 1 FROM votes AS v
+                WHERE v.ideaId = Idea.id AND v.userId = ${userId} AND v.weight = 1
+              )`),
+              'userAgreed'
+            ],
+            [
+              literal(`EXISTS (
+                SELECT 1 FROM votes AS v
+                WHERE v.ideaId = Idea.id AND v.userId = ${userId} AND v.weight = -1
+              )`),
+              'userDisagreed'
+            ]
+          ],
+        },
+        include: [
+          {
+            model: Category,
+            as: "category",
+          },
+          {
+            model: User,
+            as: "creator",
+            attributes: ["id", "name"],
+          },
+          {
+            model: Vote,
+            as: 'votes',
+            attributes: [],
+          },
+        ],
+        group: ['Idea.id', 'category.id', 'creator.id'],
+      });
+
+      return ideas.map(idea => {
+        const data = idea.toJSON();
+        return {
+          ...data,
+          voteScore: Number(data.voteScore) || 0,
+          userAgreed: Boolean(Number(data.userAgreed)),
+          userDisagreed: Boolean(Number(data.userDisagreed)),
+        };
+      });
+    } catch (error) {
+      throw new Error("Erro ao buscar ideias do usuário: " + error.message);
+    }
+  }
+
   async create(ideaData, userId) {
     try {
       return await Idea.create({
