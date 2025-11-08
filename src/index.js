@@ -1,3 +1,4 @@
+// Importação dos módulos
 const express = require("express");
 require("express-async-errors");
 const exphbs = require("express-handlebars");
@@ -6,26 +7,34 @@ const flash = require("express-flash");
 const path = require("path");
 const helmet = require("helmet");
 const csrf = require("csurf");
-
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
-// EXPRESS SETUP
+// Configuração da conexão com o banco de dados
 const conn = require("./db/conn");
 const sequelizeConnectionErros = require("./constants/sequelizeErrors");
-
+// Configuração das entidades do banco de dados
 const Category = require("./models/Category");
 const Vote = require("./models/Vote");
 const Idea = require("./models/Idea");
 const User = require("./models/User");
 
+// Importação das rotas da aplicação
 const userRoutes = require("./routes/userRoutes");
 const ideaRoutes = require("./routes/ideaRoutes");
 const voteRoutes = require("./routes/voteRoutes");
 
+// Configuração da aplicação express
 const app = express();
-
 const PORT = process.env.PORT || 3000;
 
+// Configuração do handlebars
+/**
+* HELPERS:
+* eq: igualdade (==)
+* ne: diferença (!=)
+* or: Operador lógico OU (||)
+* formatDate: exibição de datas
+*/
 const hbs = exphbs.create({
   helpers: {
     eq: (a, b) => {
@@ -54,9 +63,9 @@ const hbs = exphbs.create({
   },
 });
 
-const csrfProtection = csrf();
 
-// MIDDLEWARES
+
+// Middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
@@ -64,34 +73,25 @@ app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
 
-// Segurança (relaxa CSP em desenvolvimento para evitar ruídos do DevTools)
-const isDev = process.env.NODE_ENV !== "production";
-if (isDev) {
-  app.use(
-    helmet({
-      contentSecurityPolicy: false,
-    })
-  );
-} else {
-  app.use(helmet());
-  app.use(
-    helmet.contentSecurityPolicy({
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
-        imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "https:", "wss:"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        objectSrc: ["'none'"],
-        mediaSrc: ["'self'"],
-        frameSrc: ["'self'"],
-      },
-    })
-  );
-}
+// Configuração de Content Security Policy (CSP)
+app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https:", "wss:"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'self'"],
+    },
+  })
+);
 
-// Sessão e Flash Messages
+// Configuração de Sessão
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -100,10 +100,15 @@ app.use(
     cookie: { maxAge: 1000 * 60 * 60 },
   })
 );
+
+// Configuração de Flash messages
 app.use(flash());
 
+// Configuração do CSRF
+const csrfProtection = csrf();
 app.use(csrfProtection);
 
+// Variáveis globais da aplicação
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   res.locals.csrfToken = req.csrfToken();
@@ -112,6 +117,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// Exposição das rotas da aplicação
 app.use("/users", userRoutes);
 app.use("/ideas", ideaRoutes);
 app.use("/votes", voteRoutes);
@@ -120,7 +126,7 @@ app.get("/", (req, res) => {
   else res.redirect("/users/login")
 });
 
-// ⚠️ Middleware global de tratamento de erros (deve ficar por último)
+// Middleware global de tratamento de erros assíncronos
 app.use((err, req, res, next) => {
   if (err.code === "EBADCSRFTOKEN") {
     req.flash("error_msg", "Sessão expirada ou formulário inválido. Tente novamente.");
@@ -137,10 +143,10 @@ app.use((err, req, res, next) => {
   res.redirect("/ideas");
 });
 
-
-// DATABASE CONNECTION AND SERVER START
+// ÚLTIMO PASSO
+// Conexão com banco de dados e inicialização da aplicação
 conn
-  .sync({ alter: false }) // Mantém os dados existentes
+  .sync({ alter: false }) 
   .then(() => {
     const startServer = (port) => {
       const server = app

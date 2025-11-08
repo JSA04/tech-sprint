@@ -1,5 +1,9 @@
 const Vote = require('../models/Vote');
 
+/**
+* Votar em uma ideia
+* O voto pode ser positivo ou negativo
+*/
 async function vote({ ideaId, userId, isAgreement }) {
     try {
         const existentVote = await Vote.findOne({ where: { ideaId, userId } });
@@ -22,6 +26,9 @@ async function vote({ ideaId, userId, isAgreement }) {
     }
 }
 
+/**
+* Desfazer voto na ideia
+*/
 async function clearVote({ ideaId, userId }) {
     const deletedCount = await Vote.destroy({ where: { ideaId, userId } });
     return deletedCount;
