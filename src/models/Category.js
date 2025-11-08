@@ -1,6 +1,9 @@
 const { DataTypes } = require("sequelize");
 const db = require("../db/conn");
 
+/**
+ * Entidade que representa as categorias no Banco de Dados
+ */
 const Category = db.define(
   "Category",
   {
@@ -27,4 +30,5 @@ const Category = db.define(
     tableName: "categories",
   }
 );
+
 module.exports = Category;

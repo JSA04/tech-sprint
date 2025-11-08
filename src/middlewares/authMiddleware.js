@@ -1,3 +1,6 @@
+/** 
+* Middleware para proteger rotas autenticadas 
+*/
 function checkAuth(req, res, next) {
   if (req.session.user) {
     next();

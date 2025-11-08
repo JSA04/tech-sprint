@@ -1,3 +1,4 @@
+/* Classe para as flash-messages aparecerem acima do conteúdo */
 .flash-message {
   position: fixed !important;
   top: 4.75rem;
@@ -10,7 +11,8 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.text-truncate-3 {
+/* Classe para textos não ultrapassarem 2 linhas */
+.text-truncate-2 {
   display: -webkit-box;
   line-clamp: 2;
   -webkit-line-clamp: 2;
@@ -21,17 +23,12 @@
   height: 3rem;
 }
 
+/* Classe para textos pequenos */
 .fs-7 {
   font-size: 0.75em;
 }
 
-.blocked {
-  pointer-events: none;
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Badge para ideias do próprio usuário */
+/* Classe para badge de ideias do próprio usuário */
 .badge-owned {
   background: linear-gradient(135deg, #6366f1, #8b5cf6 45%, #ec4899 85%);
   color: #fff;
@@ -44,7 +41,6 @@
   align-items: center;
   gap: 0.35rem;
 }
-
 .badge-owned::before {
   content: "⭐";
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));

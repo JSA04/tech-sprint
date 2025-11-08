@@ -1,6 +1,9 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 
+/**
+* Criar usuário
+*/
 async function createUser({ name, email, password }) {
     try {
         const existentUser = await User.findOne({ where: { email } });
@@ -18,6 +21,9 @@ async function createUser({ name, email, password }) {
     }
 }
 
+/**
+* Autenticar usuário
+*/
 async function loginUser({ email, password }) {
     try {
         const existentUser = await User.findOne({ where: { email } });

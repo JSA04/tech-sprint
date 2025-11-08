@@ -3,6 +3,9 @@ const db = require('../db/conn');
 const User = require('./User');
 const Idea = require('./Idea');
 
+/**
+ * Entidade que representa os votos no Banco de Dados
+ */
 const Vote = db.define('Vote', {
         id: {
             type: DataTypes.INTEGER,
